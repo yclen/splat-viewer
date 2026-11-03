@@ -40,6 +40,11 @@
       background: var(--accent); color: #0b1220; font-weight: 600; cursor: pointer; }
     #status { color: var(--muted); min-height: 1.4em; }
 
+    #toast { position: fixed; left: 50%; top: 16px; transform: translate(-50%, -8px); padding: 8px 14px;
+      border-radius: 8px; background: var(--panel); opacity: 0; transition: opacity .2s, transform .2s;
+      pointer-events: none; max-width: calc(100% - 32px); text-align: center; }
+    #toast.show { opacity: 1; transform: translate(-50%, 0); }
+
     #crosshair { position: fixed; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px;
       border-radius: 50%; background: rgba(255,255,255,0.7); pointer-events: none; display: none; }
     body.locked #crosshair { display: block; }
@@ -64,17 +69,24 @@
     <div class="row"><span class="k">FPS</span><span id="hud-fps">–</span></div>
     <div class="row"><span class="k">Speed</span><span id="hud-speed">–</span></div>
     <div class="row"><span class="k">Camera</span><span id="hud-pos">–</span></div>
+    <div class="row"><span class="k">Collision</span><span id="hud-collision">–</span></div>
   </div>
+
+  <div id="toast"></div>
 
   <div id="help">
     <h3>Controls <span style="color:var(--muted);font-weight:400">(H to hide)</span></h3>
     <table>
-      <tr><td>F</td><td>Toggle orbit / fly mode</td></tr>
-      <tr><td>Click</td><td>Fly mode: capture mouse to look (Esc releases)</td></tr>
-      <tr><td>W A S D</td><td>Fly forward / left / back / right</td></tr>
+      <tr><td>F</td><td>Switch mode: orbit → fly → walk</td></tr>
+      <tr><td>Click</td><td>Fly / walk: capture mouse to look (Esc releases)</td></tr>
+      <tr><td>W A S D</td><td>Move forward / left / back / right</td></tr>
       <tr><td>E / Q</td><td>Fly up / down</td></tr>
-      <tr><td>Shift / Alt</td><td>Boost / slow down</td></tr>
-      <tr><td>Scroll</td><td>Fly mode: change speed · Orbit: zoom</td></tr>
+      <tr><td>Space</td><td>Walk: jump</td></tr>
+      <tr><td>Shift / Alt</td><td>Boost or run / slow down</td></tr>
+      <tr><td>Scroll</td><td>Orbit: zoom · Fly: speed · Walk: camera distance</td></tr>
+      <tr><td>V</td><td>Walk: first / third person</td></tr>
+      <tr><td>T</td><td>Walk: back to last solid ground</td></tr>
+      <tr><td>C</td><td>Show collision blocks</td></tr>
       <tr><td>R</td><td>Recenter view on the model</td></tr>
       <tr><td>1 / 2 / 3</td><td>Rotate model 90° about X / Y / Z</td></tr>
       <tr><td>U</td><td>Flip model upside down</td></tr>
