@@ -16,7 +16,10 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.prepend(renderer.domElement);
 
 const scene = new THREE.Scene();
-const view = { fov: 60, background: "#111316" };
+const GLIDE_KEY = "splat-viewer:orbitGlide";
+let savedGlide = null;
+try { savedGlide = localStorage.getItem(GLIDE_KEY); } catch {}
+const view = { fov: 60, background: "#111316", orbitGlide: savedGlide !== "false" };
 scene.background = new THREE.Color(view.background);
 
 const camera = new THREE.PerspectiveCamera(view.fov, window.innerWidth / window.innerHeight, 0.01, 1000);
@@ -52,7 +55,14 @@ function toast(text, ms = 3500) {
 // ---------- Controls ----------
 
 const orbit = new OrbitControls(camera, renderer.domElement);
-orbit.enableDamping = true;
+orbit.enableDamping = view.orbitGlide;
+
+// Glide = orbit keeps drifting after you let go; off = it stops dead.
+function setOrbitGlide(on) {
+  view.orbitGlide = on;
+  orbit.enableDamping = on;
+  try { localStorage.setItem(GLIDE_KEY, String(on)); } catch {}
+}
 
 const fly = new FlyControls(camera, renderer.domElement);
 const walk = new WalkControls(camera, renderer.domElement, scene);
@@ -426,6 +436,7 @@ viewFolder.add(view, "fov", 30, 110, 1).name("Field of view").onChange((v) => {
   camera.updateProjectionMatrix();
 });
 viewFolder.addColor(view, "background").name("Background").onChange((v) => scene.background.set(v));
+viewFolder.add(view, "orbitGlide").name("Orbit glide  (G)").listen().onChange(setOrbitGlide);
 
 const modelFolder = gui.addFolder("Model");
 modelFolder.add(guiState, "rotateX").name("Rotate 90° about X  (1)");
@@ -446,6 +457,10 @@ window.addEventListener("keydown", (e) => {
     case "KeyV": if (mode === "walk") walk.toggleView(); break;
     case "KeyT": if (mode === "walk") walk.respawn(); break;
     case "KeyC": setCollisionVisible(!collisionSettings.show); break;
+    case "KeyG":
+      setOrbitGlide(!view.orbitGlide);
+      toast(`Orbit glide ${view.orbitGlide ? "on" : "off"}`, 1500);
+      break;
     case "Digit1": guiState.rotateX(); break;
     case "Digit2": guiState.rotateY(); break;
     case "Digit3": guiState.rotateZ(); break;

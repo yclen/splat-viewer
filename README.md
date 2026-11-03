@@ -7,7 +7,8 @@ Rendering is done by [Spark](https://sparkjs.dev) on top of [three.js](https://t
 ## Run it
 
 Double-click `start.bat` (needs Python), then drag a scan onto the page.
-Or from a terminal in this folder: `python -m http.server 8123` and open http://localhost:8123.
+Or from a terminal in this folder: `python serve.py` and open http://localhost:8123.
+`serve.py` is a tiny local server that tells the browser not to cache, so code changes show up on a normal refresh.
 
 A scan placed in a `scans/` folder here can also be opened by URL: `http://localhost:8123/?url=scans/myscan.ply`
 (`scans/` and splat files are git-ignored).
@@ -46,6 +47,7 @@ meters for most phone scans; for other scans, set **Player height** to match.
 | V | Walk: first / third person |
 | T | Walk: back to last solid ground |
 | C | Show collision blocks |
+| G | Orbit glide on / off (remembered) |
 | R | Recenter view |
 | 1 / 2 / 3 | Rotate model 90° about X / Y / Z (remembered per file) |
 | U | Flip upside down |
