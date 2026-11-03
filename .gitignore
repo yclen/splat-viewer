@@ -1,0 +1,8 @@
+﻿# Scans are large; keep them out of the repo
+scans/
+*.ply
+*.spz
+*.splat
+*.ksplat
+*.sog
+

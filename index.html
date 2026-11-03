@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Splat Viewer</title>
+  <style>
+    :root {
+      --bg: #111316;
+      --panel: rgba(20, 22, 26, 0.82);
+      --text: #e6e8eb;
+      --muted: #9aa1ab;
+      --accent: #6cb6ff;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--text);
+      font: 13px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    canvas { display: block; }
+
+    #hud { position: fixed; left: 12px; top: 12px; padding: 8px 10px; border-radius: 8px;
+      background: var(--panel); font-variant-numeric: tabular-nums; pointer-events: none; min-width: 210px; }
+    #hud .row { display: flex; justify-content: space-between; gap: 16px; }
+    #hud .k { color: var(--muted); }
+    #hud .mode { color: var(--accent); font-weight: 600; }
+
+    #help { position: fixed; left: 12px; bottom: 12px; padding: 10px 12px; border-radius: 8px;
+      background: var(--panel); max-width: 340px; }
+    #help h3 { margin: 0 0 6px; font-size: 13px; }
+    #help table { border-collapse: collapse; }
+    #help td { padding: 1px 10px 1px 0; vertical-align: top; }
+    #help td:first-child { color: var(--accent); white-space: nowrap; }
+    #help.hidden { display: none; }
+
+    #drop { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 12px; text-align: center; }
+    #drop.hidden { display: none; }
+    #drop .box { padding: 32px 40px; border: 2px dashed #3a4049; border-radius: 14px; background: var(--panel); }
+    #drop.over .box { border-color: var(--accent); }
+    #drop button { margin-top: 10px; padding: 8px 16px; border: 0; border-radius: 6px;
+      background: var(--accent); color: #0b1220; font-weight: 600; cursor: pointer; }
+    #status { color: var(--muted); min-height: 1.4em; }
+
+    #crosshair { position: fixed; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px;
+      border-radius: 50%; background: rgba(255,255,255,0.7); pointer-events: none; display: none; }
+    body.locked #crosshair { display: block; }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/",
+        "@sparkjsdev/spark": "https://cdn.jsdelivr.net/npm/@sparkjsdev/spark@2.3.1/dist/spark.module.js",
+        "lil-gui": "https://cdn.jsdelivr.net/npm/lil-gui@0.20.0/dist/lil-gui.esm.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="hud">
+    <div class="row"><span class="k">Mode</span><span id="hud-mode" class="mode">Orbit</span></div>
+    <div class="row"><span class="k">File</span><span id="hud-file">–</span></div>
+    <div class="row"><span class="k">Splats</span><span id="hud-splats">–</span></div>
+    <div class="row"><span class="k">Load time</span><span id="hud-load">–</span></div>
+    <div class="row"><span class="k">FPS</span><span id="hud-fps">–</span></div>
+    <div class="row"><span class="k">Speed</span><span id="hud-speed">–</span></div>
+    <div class="row"><span class="k">Camera</span><span id="hud-pos">–</span></div>
+  </div>
+
+  <div id="help">
+    <h3>Controls <span style="color:var(--muted);font-weight:400">(H to hide)</span></h3>
+    <table>
+      <tr><td>F</td><td>Toggle orbit / fly mode</td></tr>
+      <tr><td>Click</td><td>Fly mode: capture mouse to look (Esc releases)</td></tr>
+      <tr><td>W A S D</td><td>Fly forward / left / back / right</td></tr>
+      <tr><td>E / Q</td><td>Fly up / down</td></tr>
+      <tr><td>Shift / Alt</td><td>Boost / slow down</td></tr>
+      <tr><td>Scroll</td><td>Fly mode: change speed · Orbit: zoom</td></tr>
+      <tr><td>R</td><td>Recenter view on the model</td></tr>
+      <tr><td>1 / 2 / 3</td><td>Rotate model 90° about X / Y / Z</td></tr>
+      <tr><td>U</td><td>Flip model upside down</td></tr>
+      <tr><td>O</td><td>Open another file</td></tr>
+    </table>
+  </div>
+
+  <div id="drop">
+    <div class="box">
+      <div style="font-size:16px;font-weight:600">Drop a Gaussian splat file here</div>
+      <div style="color:var(--muted)">.ply · .spz · .splat · .ksplat · .sog</div>
+      <button id="open-btn" type="button">Choose file…</button>
+      <div id="status"></div>
+    </div>
+  </div>
+  <input id="file-input" type="file" accept=".ply,.spz,.splat,.ksplat,.sog,.zip" hidden>
+  <div id="crosshair"></div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
